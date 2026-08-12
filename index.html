@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neon Crawler Extreme</title>
+    <title>Neon Arcade Hub</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,33 +11,36 @@
 
     <div class="main-container">
         <header class="hero-section">
-            <h1>NEON<span>CRAWLER</span></h1>
-            <p class="subtitle">Um jogo de labirinto retro feito com HTML, CSS e JavaScript Puro.</p>
+            <h1>NEON<span>ARCADE</span></h1>
+            <p class="subtitle">Dois jogos clássicos e interativos rodando em JavaScript Puro.</p>
         </header>
 
-        <!-- GUIA DE COMO JOGAR -->
-        <section class="instructions-section">
-            <h3>📖 COMO JOGAR</h3>
-            <div class="instructions-grid">
-                <div class="ins-card"><span class="emoji">⚔️</span> <b>Você:</b> Use as setas ou WASD.</div>
-                <div class="ins-card"><span class="emoji">🪙</span> <b>Moeda:</b> Garante +10 pontos.</div>
-                <div class="ins-card"><span class="emoji">🚪</span> <b>Portal:</b> Avança de fase.</div>
-                <div class="ins-card"><span class="emoji">👾</span> <b>Monstro:</b> Fuja! Ele te persegue.</div>
-            </div>
-        </section>
-
-        <!-- SEÇÃO DO TABULEIRO -->
+        <!-- JOGO 1: LABIRINTO -->
         <section class="game-section">
+            <h2>🕹️ JOGO 1: LABIRINTO INFINITO</h2>
             <div class="scoreboard">
                 <span id="score">MOEDAS: 0</span>
                 <span id="level">ANDAR: 1</span>
             </div>
             
             <div id="dungeon"></div>
-            
-            <div id="game-log">Clique na tela e use as setas para andar e ativar o som!</div>
+            <div id="game-log">Use as setas para mover o ⚔️, coletar moedas 🪙 e fugir do 👾!</div>
+            <button class="game-btn" onclick="resetGame()">Reiniciar Labirinto</button>
+        </section>
 
-            <button id="restart-btn" onclick="resetGame()">Reiniciar Partida</button>
+        <!-- JOGO 2: COBRINHA NEON (NOVO) -->
+        <section class="game-section snake-section">
+            <h2>🐍 JOGO 2: SNAKE NEON</h2>
+            <div class="scoreboard">
+                <span id="snake-score">PONTOS: 0</span>
+                <span id="snake-high">RECORDE: 0</span>
+            </div>
+
+            <!-- Tela de desenho do jogo da cobrinha -->
+            <canvas id="snakeCanvas" width="300" height="300"></canvas>
+            
+            <div id="snake-log">Use as setas para guiar a cobra e comer os pixels de energia!</div>
+            <button class="game-btn snake-btn" onclick="resetSnakeGame()">Reiniciar Cobrinha</button>
         </section>
     </div>
 
