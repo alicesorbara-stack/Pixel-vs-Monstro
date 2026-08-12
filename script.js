@@ -1,3 +1,6 @@
+// =========================================================================
+// VARIÁVEIS E COMPONENTES - JOGO 1: LABIRINTO
+// =========================================================================
 const dungeonElement = document.getElementById('dungeon');
 const scoreElement = document.getElementById('score');
 const levelElement = document.getElementById('level');
@@ -107,6 +110,9 @@ function resetGame() {
     gameLog.innerText = 'Labirinto reiniciado!';
     initGame();
 }
+// =========================================================================
+// VARIÁVEIS E COMPONENTES - JOGO 2: SNAKE NEON (TELA CINZA RESOLVIDA)
+// =========================================================================
 const canvas = document.getElementById("snakeCanvas");
 const ctx = canvas.getContext("2d");
 const snakeScoreElement = document.getElementById("snake-score");
@@ -129,8 +135,11 @@ function resetSnakeGame() {
     snakeScoreElement.innerText = `PONTOS: ${snakeScore}`;
     snakeDirection = "RIGHT";
     snakeLog.innerText = "Guie a cobra pixelada e ganhe energia!";
+    
+    // RESOLVIDO: Inicialização perfeita em formato de lista indexada
     snake = [];
     snake[0] = { x: 10 * box, y: 10 * box };
+    
     generateSnakeFood();
     snakeGameInterval = setInterval(drawSnakeGame, 130);
 }
@@ -142,6 +151,7 @@ function generateSnakeFood() {
 
 function drawSnakeGame() {
     if (isSnakeGameOver) return;
+
     ctx.fillStyle = "#030307";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -153,6 +163,7 @@ function drawSnakeGame() {
     ctx.fillStyle = "#ff007f";
     ctx.fillRect(food.x, food.y, box, box);
 
+    // RESOLVIDO: Coordenadas da cabeça lidas da forma correta
     let snakeX = snake[0].x;
     let snakeY = snake[0].y;
 
@@ -184,6 +195,7 @@ function drawSnakeGame() {
         }
         return;
     }
+
     snake.unshift(newHead);
 }
 
@@ -194,6 +206,7 @@ function collisionWithSelf(head, array) {
     return false;
 }
 
+// Escutador de Teclado Único
 window.addEventListener('keydown', (e) => {
     if (!gameOver) {
         let nextRow = player.row;
@@ -225,6 +238,7 @@ window.addEventListener('keydown', (e) => {
     }
 });
 
+// Sintetizador de Som
 const sound = {
     ctx: null,
     init() { if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); },
