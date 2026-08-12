@@ -3,22 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mini Dungeon Crawler</title>
+    <title>NeonByte Studios | Desenvolvimento Criativo</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="game-container">
-        <h1>⚔️ DUNGEON CRAWLER ⚔️</h1>
-        <div class="scoreboard">
-            <span id="score">Moedas: 0</span>
-            <span id="level">Andar: 1</span>
-        </div>
-        
-        <!-- O labirinto será gerado aqui dentro pelo JavaScript -->
-        <div id="dungeon"></div>
-        
-        <p class="controls">Use as <b>setas do teclado</b> ou <b>WASD</b> para se mover.</p>
-        <button id="restart-btn" onclick="resetGame()">Reiniciar Jogo</button>
+    <!-- Fundo de Luzes Coloridas -->
+    <div class="gradient-bg"></div>
+
+    <div class="main-container">
+        <!-- HEADER / TOPO PROFISSIONAL -->
+        <header class="hero-section">
+            <div class="badge">PROJETO INTERATIVO</div>
+            <h1>NeonByte <span>Studios</span></h1>
+            <p class="subtitle">Criando experiências digitais memoráveis com HTML, CSS e JavaScript puro.</p>
+            
+            <!-- Painel de Informações Estilo Bento Grid -->
+            <div class="bento-grid">
+                <div class="bento-item color-purple">
+                    <h3 id="stat-games">0</h3>
+                    <p>Jogos Criados</p>
+                </div>
+                <div class="bento-item color-pink">
+                    <h3 id="stat-lines">0+</h3>
+                    <p>Linhas de Código</p>
+                </div>
+                <div class="bento-item color-blue">
+                    <h3 id="stat-coffee">0</h3>
+                    <p>Xícaras de Café</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- SEÇÃO DO JOGO INTERATIVO -->
+        <section class="game-section">
+            <h2>🕹️ LABIRINTO INFINITO</h2>
+            <p class="game-desc">Teste nossa mecânica de colisão e matrizes em tempo real abaixo.</p>
+            
+            <div class="scoreboard">
+                <span id="score">Moedas: 0</span>
+                <span id="level">Andar: 1</span>
+            </div>
+            
+            <!-- Grade do Labirinto -->
+            <div id="dungeon"></div>
+            
+            <p class="controls">Use as <b>setas do teclado</b> ou as teclas <b>WASD</b> para mover o ⚔️.</p>
+            <button id="restart-btn" onclick="resetGame()">Reiniciar Partida</button>
+        </section>
     </div>
 
     <script src="script.js"></script>
