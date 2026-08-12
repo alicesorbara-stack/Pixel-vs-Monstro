@@ -15,16 +15,17 @@ let exit = { row: 8, col: 8 };
 let enemy = { row: 5, col: 5 };
 let coin = { row: 3, col: 6 };
 
-// MAPA CORRIGIDO (Matriz 10x10 onde 1 = Parede, 0 = Chão de passagem)
-const mapTemplate = [,
- ,
- ,
- ,
- ,
- ,
- ,
- ,
- ,
+// MATRIZ DO MAPA TOTALMENTE CORRIGIDA (1 = Parede, 0 = Chão)
+const mapTemplate = [
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+    [1, 0, 1, 0, 1, 0, 1, 1, 0, 1],
+    [1, 0, 1, 0, 0, 0, 0, 1, 0, 1],
+    [1, 0, 1, 1, 1, 1, 0, 1, 0, 1],
+    [1, 0, 0, 0, 0, 1, 0, 0, 0, 1],
+    [1, 1, 1, 1, 0, 1, 1, 1, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 1, 0, 1],
+    [1, 0, 1, 1, 1, 1, 0, 0, 0, 1],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 ];
 
@@ -36,14 +37,12 @@ let currentMap = [];
 const sound = {
     ctx: null,
 
-    // Inicializa o sistema de áudio (o navegador exige um clique do usuário antes)
     init() {
         if (!this.ctx) {
             this.ctx = new (window.AudioContext || window.webkitAudioContext)();
         }
     },
 
-    // Som de Passo (Curto e grave)
     playStep() {
         this.init();
         let osc = this.ctx.createOscillator();
@@ -59,14 +58,13 @@ const sound = {
         osc.stop(this.ctx.currentTime + 0.08);
     },
 
-    // Som de Moeda (Agudo e esticado, estilo Mario)
     playCoin() {
         this.init();
         let osc = this.ctx.createOscillator();
         let gain = this.ctx.createGain();
         osc.type = 'square';
-        osc.frequency.setValueAtTime(587.33, this.ctx.currentTime); // Nota Ré
-        osc.frequency.setValueAtTime(880, this.ctx.currentTime + 0.08); // Nota Lá
+        osc.frequency.setValueAtTime(587.33, this.ctx.currentTime); 
+        osc.frequency.setValueAtTime(880, this.ctx.currentTime + 0.08); 
         gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.25);
         osc.connect(gain);
@@ -75,10 +73,9 @@ const sound = {
         osc.stop(this.ctx.currentTime + 0.25);
     },
 
-    // Som de Próximo Nível (Escala musical ascendente)
     playLevelUp() {
         this.init();
-        let notes = [261.63, 329.63, 392.00, 523.25]; // Dó, Mi, Sol, Dó alto
+        let notes = [261.63, 329.63, 392.00, 523.25]; 
         notes.forEach((freq, index) => {
             let osc = this.ctx.createOscillator();
             let gain = this.ctx.createGain();
@@ -93,7 +90,6 @@ const sound = {
         });
     },
 
-    // Som de Game Over (Escala descendente e distorcida)
     playGameOver() {
         this.init();
         let osc = this.ctx.createOscillator();
@@ -111,7 +107,7 @@ const sound = {
 };
 
 // ==========================================
-// LÓGICA DO JOGO
+// LÓGICA PRINCIPAL DO JOGO
 // ==========================================
 
 function initGame() {
@@ -164,7 +160,7 @@ function drawMap() {
     }
 }
 
-// Movimentação
+// Movimentação por teclado
 window.addEventListener('keydown', (e) => {
     if (gameOver) return;
 
@@ -172,7 +168,7 @@ window.addEventListener('keydown', (e) => {
     let nextCol = player.col;
 
     if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
-        e.preventDefault();
+        e.preventDefault(); // Evita rolar a página
     }
 
     if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') nextRow--;
@@ -180,14 +176,11 @@ window.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') nextCol--;
     if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') nextCol++;
 
-    // Se andou para um espaço vazio
     if (currentMap[nextRow][nextCol] !== 1) {
         player.row = nextRow;
         player.col = nextCol;
         
-        // 🎵 Toca o som de passo a cada movimento válido
         sound.playStep();
-        
         moveEnemy();
         checkCollisions();
     }
@@ -212,27 +205,24 @@ function moveEnemy() {
 }
 
 function checkCollisions() {
-    // 🪙 Pegou a moeda
     if (player.row === coin.row && player.col === coin.col) {
         score += 10;
         scoreElement.innerText = `Moedas: ${score}`;
         coin.row = -1; 
         coin.col = -1;
-        sound.playCoin(); // 🎵 Som de moeda
+        sound.playCoin();
     }
 
-    // 💥 O monstro pegou
     if (player.row === enemy.row && player.col === enemy.col) {
-        sound.playGameOver(); // 🎵 Som de derrota
-        setTimeout(() => alert('💥 O monstro te pegou! Fim de jogo.'), 50);
+        sound.playGameOver();
         gameOver = true;
+        setTimeout(() => alert('💥 O monstro te pegou! Fim de jogo.'), 50);
     }
 
-    // 🚪 Passou de andar
     if (player.row === exit.row && player.col === exit.col) {
         level++;
         levelElement.innerText = `Andar: ${level}`;
-        sound.playLevelUp(); // 🎵 Som de vitória/avanço
+        sound.playLevelUp();
         setTimeout(() => {
             alert(`🎉 Você avançou para o Andar ${level}!`);
             initGame();
@@ -248,23 +238,24 @@ function resetGame() {
     initGame();
 }
 
-// Animação numérica do topo
+// Animação numérica profissional do Dashboard do site
 function animateStats(id, start, end, duration) {
     let obj = document.getElementById(id);
     let current = start;
     let range = end - start;
     let increment = end > start ? 1 : -1;
+    
     let step = function() {
         current += increment;
         obj.innerText = current + (id === 'stat-lines' ? '+' : '');
-        if (current != end) {
+        if (current !== end) {
             setTimeout(step, duration / range);
         }
     };
     setTimeout(step, 100);
 }
 
-// Execuções ao iniciar
+// Inicializadores automáticos
 initGame();
 animateStats('stat-games', 0, 14, 1500);
 animateStats('stat-lines', 0, 450, 1500);
