@@ -1,10 +1,10 @@
-// Elementos HTML
+// Elementos HTML da Interface
 const dungeonElement = document.getElementById('dungeon');
 const scoreElement = document.getElementById('score');
 const levelElement = document.getElementById('level');
 const gameLog = document.getElementById('game-log');
 
-// Configurações Globais do Labirinto
+// Configurações do Jogo
 const MAP_SIZE = 10;
 let score = 0;
 let level = 1;
@@ -17,25 +17,23 @@ let coin = { row: 3, col: 6 };
 
 let currentMap = [];
 
-// =========================================================================
-// CORREÇÃO CRÍTICA: GERAÇÃO DA MATRIZ AUTOMÁTICA EM VEZ DE HARDCODED
-// =========================================================================
-function generateMapTemplate() {
+// FUNÇÃO DE GERAÇÃO SEGURA: Constrói a matriz dinamicamente via código puro
+function buildPerfectMap() {
     let map = [];
     for (let r = 0; r < MAP_SIZE; r++) {
         let row = [];
         for (let c = 0; c < MAP_SIZE; c++) {
-            // Cria as paredes externas (bordas do labirinto)
+            // Paredes das bordas externas
             if (r === 0 || r === MAP_SIZE - 1 || c === 0 || c === MAP_SIZE - 1) {
-                row.push(1); // 1 significa Parede
+                row.push(1); // 1 = Parede
             } 
-            // Cria algumas paredes internas fixas para fazer o labirinto
+            // Obstáculos internos fixos para criar caminhos desafiadores
             else if ((r === 3 && c < 7) || (r === 6 && c > 2) || (c === 5 && r > 1 && r < 5)) {
-                row.push(1); 
+                row.push(1);
             } 
-            // Caminho livre
+            // Áreas transitáveis livres
             else {
-                row.push(0); // 0 significa Chão Livre
+                row.push(0); // 0 = Chão Livre
             }
         }
         map.push(row);
@@ -43,7 +41,7 @@ function generateMapTemplate() {
     return map;
 }
 
-// Gerador de Áudio Nativo Web Audio API (Sons retrô)
+// Sintetizador de Áudio Nativo (Gera música e efeitos de 8-bits)
 const sound = {
     ctx: null,
     init() {
@@ -111,7 +109,7 @@ const sound = {
 
 function initGame() {
     gameOver = false;
-    currentMap = generateMapTemplate(); // Gera a matriz limpa e corrigida automaticamente
+    currentMap = buildPerfectMap(); // Carrega o mapa perfeito sem depender de texto externo
     player = { row: 1, col: 1 };
     exit = { row: 8, col: 8 };
     
@@ -123,11 +121,10 @@ function initGame() {
 
 function spawnItem(item) {
     let r, c;
-    let template = generateMapTemplate();
     do {
         r = Math.floor(Math.random() * (MAP_SIZE - 2)) + 1;
         c = Math.floor(Math.random() * (MAP_SIZE - 2)) + 1;
-    } while (template[r][c] === 1 || (r === player.row && c === player.col) || (r === exit.row && c === exit.col));
+    } while (currentMap[r][c] === 1 || (r === player.row && c === player.col) || (r === exit.row && c === exit.col));
     item.row = r;
     item.col = c;
 }
@@ -154,7 +151,7 @@ function drawMap() {
     }
 }
 
-// Escuta os cliques de movimento no teclado
+// Movimentação do Personagem
 window.addEventListener('keydown', (e) => {
     if (gameOver) return;
 
@@ -162,7 +159,7 @@ window.addEventListener('keydown', (e) => {
     let nextCol = player.col;
 
     if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
-        e.preventDefault(); // Trava a rolagem natural da página
+        e.preventDefault(); // Impede que a tela do navegador role para cima ou para baixo
     }
 
     if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') nextRow--;
@@ -170,12 +167,12 @@ window.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') nextCol--;
     if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') nextCol++;
 
-    // Verifica barreiras de colisão
+    // Só permite andar se o destino for chão (0)
     if (currentMap[nextRow][nextCol] !== 1) {
         player.row = nextRow;
         player.col = nextCol;
         
-        sound.playStep(); // Toca áudio de movimento
+        sound.playStep(); // Toca som
         moveEnemy();
         checkCollisions();
         drawMap();
@@ -199,31 +196,28 @@ function moveEnemy() {
 }
 
 function checkCollisions() {
-    // Pegar Moeda
     if (player.row === coin.row && player.col === coin.col) {
         score += 10;
         scoreElement.innerText = `MOEDAS: ${score}`;
         coin.row = -1;
         coin.col = -1;
         sound.playCoin();
-        gameLog.innerText = '🪙 Incrível! Você coletou +10 moedas de neon.';
+        gameLog.innerText = '🪙 Excelente! Você encontrou +10 moedas de neon.';
         gameLog.style.borderLeftColor = '#00dfd8';
     }
 
-    // Colisão com o Monstro
     if (player.row === enemy.row && player.col === enemy.col) {
         sound.playOver();
         gameOver = true;
-        gameLog.innerText = `💥 GAME OVER! O monstro te pegou no Andar ${level}. Clique no botão abaixo para tentar de novo.`;
+        gameLog.innerText = `💥 FIM DE JOGO! O monstro te pegou no Andar ${level}. Clique no botão abaixo para reiniciar.`;
         gameLog.style.borderLeftColor = '#ff007f';
     }
 
-    // Chegar na Porta de Saída
     if (player.row === exit.row && player.col === exit.col) {
         level++;
         levelElement.innerText = `ANDAR: ${level}`;
         sound.playLevel();
-        gameLog.innerText = `🚪 Avançou! Você passou para o Andar ${level}!`;
+        gameLog.innerText = `🚪 Avançou! Você passou com sucesso para o Andar ${level}!`;
         gameLog.style.borderLeftColor = '#00dfd8';
         initGame();
     }
@@ -234,10 +228,10 @@ function resetGame() {
     level = 1;
     scoreElement.innerText = `MOEDAS: ${score}`;
     levelElement.innerText = `ANDAR: ${level}`;
-    gameLog.innerText = 'Labirinto resetado! Encontre a saída 🚪.';
+    gameLog.innerText = 'Masmorra reiniciada! Encontre a saída 🚪.';
     gameLog.style.borderLeftColor = '#ff007f';
     initGame();
 }
 
-// Execução Inicial Obrigatória
+// Inicializa obrigatoriamente sem erros
 initGame();
