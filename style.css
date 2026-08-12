@@ -66,40 +66,6 @@ h1 span {
     margin-bottom: 25px;
 }
 
-/* Estilo Bento Grid dos Contadores */
-.bento-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    margin-bottom: 25px;
-}
-
-.bento-item {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 14px;
-    border-radius: 14px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-}
-
-.bento-item h3 {
-    font-size: 24px;
-    font-weight: 800;
-    margin-bottom: 2px;
-}
-
-.bento-item p {
-    font-size: 10px;
-    color: #a0aec0;
-    text-transform: uppercase;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-}
-
-.color-purple h3 { color: #818cf8; text-shadow: 0 0 8px rgba(129, 140, 248, 0.5); }
-.color-pink h3 { color: #f472b6; text-shadow: 0 0 8px rgba(244, 114, 182, 0.5); }
-.color-blue h3 { color: #22d3ee; text-shadow: 0 0 8px rgba(34, 211, 238, 0.5); }
-
 .instructions-section {
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid rgba(255, 255, 255, 0.08);
