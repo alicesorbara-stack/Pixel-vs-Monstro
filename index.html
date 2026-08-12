@@ -28,7 +28,7 @@
             <button class="game-btn" onclick="resetGame()">Reiniciar Labirinto</button>
         </section>
 
-        <!-- JOGO 2: COBRINHA NEON (NOVO) -->
+        <!-- JOGO 2: COBRINHA NEON -->
         <section class="game-section snake-section">
             <h2>🐍 JOGO 2: SNAKE NEON</h2>
             <div class="scoreboard">
@@ -36,11 +36,20 @@
                 <span id="snake-high">RECORDE: 0</span>
             </div>
 
-            <!-- Tela de desenho do jogo da cobrinha -->
             <canvas id="snakeCanvas" width="300" height="300"></canvas>
             
             <div id="snake-log">Use as setas para guiar a cobra e comer os pixels de energia!</div>
             <button class="game-btn snake-btn" onclick="resetSnakeGame()">Reiniciar Cobrinha</button>
+        </section>
+
+        <!-- SEÇÃO DE CURTIDAS -->
+        <section class="game-section like-section">
+            <h2>❤️ CURTIU O PROJETO?</h2>
+            <p class="subtitle" style="margin-bottom: 15px;">Deixe o seu gostei para apoiar o desenvolvedor!</p>
+            
+            <button id="like-btn" class="game-btn" onclick="triggerLike()">
+                <span id="like-icon">🤍</span> <span id="like-text">Curtir Projeto</span> (<span id="like-count">124</span>)
+            </button>
         </section>
     </div>
 
