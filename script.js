@@ -4,7 +4,7 @@ const scoreElement = document.getElementById('score');
 const levelElement = document.getElementById('level');
 const gameLog = document.getElementById('game-log');
 
-// Configurações Globais
+// Configurações Globais do Labirinto
 const MAP_SIZE = 10;
 let score = 0;
 let level = 1;
@@ -15,22 +15,35 @@ let exit = { row: 8, col: 8 };
 let enemy = { row: 5, col: 5 };
 let coin = { row: 3, col: 6 };
 
-// MATRIZ COMPLETA E CORRIGIDA SEM ERROS DE SINTAXE (1 = Parede, 0 = Caminho)
-const mapTemplate = [,
- ,
- ,
- ,
- ,
- ,
- ,
- ,
- ,
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-];
-
 let currentMap = [];
 
-// Gerador de Áudio Web Audio API (Sons de 8-bits puros)
+// =========================================================================
+// CORREÇÃO CRÍTICA: GERAÇÃO DA MATRIZ AUTOMÁTICA EM VEZ DE HARDCODED
+// =========================================================================
+function generateMapTemplate() {
+    let map = [];
+    for (let r = 0; r < MAP_SIZE; r++) {
+        let row = [];
+        for (let c = 0; c < MAP_SIZE; c++) {
+            // Cria as paredes externas (bordas do labirinto)
+            if (r === 0 || r === MAP_SIZE - 1 || c === 0 || c === MAP_SIZE - 1) {
+                row.push(1); // 1 significa Parede
+            } 
+            // Cria algumas paredes internas fixas para fazer o labirinto
+            else if ((r === 3 && c < 7) || (r === 6 && c > 2) || (c === 5 && r > 1 && r < 5)) {
+                row.push(1); 
+            } 
+            // Caminho livre
+            else {
+                row.push(0); // 0 significa Chão Livre
+            }
+        }
+        map.push(row);
+    }
+    return map;
+}
+
+// Gerador de Áudio Nativo Web Audio API (Sons retrô)
 const sound = {
     ctx: null,
     init() {
@@ -57,8 +70,8 @@ const sound = {
         let osc = this.ctx.createOscillator();
         let gain = this.ctx.createGain();
         osc.type = 'square';
-        osc.frequency.setValueAtTime(523.25, this.ctx.currentTime); // Nota Dó
-        osc.frequency.setValueAtTime(783.99, this.ctx.currentTime + 0.08); // Nota Sol
+        osc.frequency.setValueAtTime(523.25, this.ctx.currentTime);
+        osc.frequency.setValueAtTime(783.99, this.ctx.currentTime + 0.08);
         gain.gain.setValueAtTime(0.05, this.ctx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.2);
         osc.connect(gain);
@@ -98,7 +111,7 @@ const sound = {
 
 function initGame() {
     gameOver = false;
-    currentMap = JSON.parse(JSON.stringify(mapTemplate));
+    currentMap = generateMapTemplate(); // Gera a matriz limpa e corrigida automaticamente
     player = { row: 1, col: 1 };
     exit = { row: 8, col: 8 };
     
@@ -110,10 +123,11 @@ function initGame() {
 
 function spawnItem(item) {
     let r, c;
+    let template = generateMapTemplate();
     do {
         r = Math.floor(Math.random() * (MAP_SIZE - 2)) + 1;
         c = Math.floor(Math.random() * (MAP_SIZE - 2)) + 1;
-    } while (mapTemplate[r][c] === 1 || (r === player.row && c === player.col) || (r === exit.row && c === exit.col));
+    } while (template[r][c] === 1 || (r === player.row && c === player.col) || (r === exit.row && c === exit.col));
     item.row = r;
     item.col = c;
 }
@@ -140,7 +154,7 @@ function drawMap() {
     }
 }
 
-// Evento de clique no teclado
+// Escuta os cliques de movimento no teclado
 window.addEventListener('keydown', (e) => {
     if (gameOver) return;
 
@@ -148,7 +162,7 @@ window.addEventListener('keydown', (e) => {
     let nextCol = player.col;
 
     if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
-        e.preventDefault(); // Impede a tela de rolar
+        e.preventDefault(); // Trava a rolagem natural da página
     }
 
     if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') nextRow--;
@@ -156,12 +170,12 @@ window.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') nextCol--;
     if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') nextCol++;
 
-    // Só anda se não for parede
+    // Verifica barreiras de colisão
     if (currentMap[nextRow][nextCol] !== 1) {
         player.row = nextRow;
         player.col = nextCol;
         
-        sound.playStep(); // Toca som de passo
+        sound.playStep(); // Toca áudio de movimento
         moveEnemy();
         checkCollisions();
         drawMap();
@@ -185,14 +199,14 @@ function moveEnemy() {
 }
 
 function checkCollisions() {
-    // Coleta Moeda
+    // Pegar Moeda
     if (player.row === coin.row && player.col === coin.col) {
         score += 10;
         scoreElement.innerText = `MOEDAS: ${score}`;
         coin.row = -1;
         coin.col = -1;
         sound.playCoin();
-        gameLog.innerText = '🪙 Boa! Você coletou +10 moedas de neon.';
+        gameLog.innerText = '🪙 Incrível! Você coletou +10 moedas de neon.';
         gameLog.style.borderLeftColor = '#00dfd8';
     }
 
@@ -200,16 +214,16 @@ function checkCollisions() {
     if (player.row === enemy.row && player.col === enemy.col) {
         sound.playOver();
         gameOver = true;
-        gameLog.innerText = `💥 GAME OVER! O monstro te pegou no Andar ${level}. Clique abaixo para reiniciar.`;
+        gameLog.innerText = `💥 GAME OVER! O monstro te pegou no Andar ${level}. Clique no botão abaixo para tentar de novo.`;
         gameLog.style.borderLeftColor = '#ff007f';
     }
 
-    // Chegou no Portal
+    // Chegar na Porta de Saída
     if (player.row === exit.row && player.col === exit.col) {
         level++;
         levelElement.innerText = `ANDAR: ${level}`;
         sound.playLevel();
-        gameLog.innerText = `🚪 Portal Ativado! Você desceu com segurança para o Andar ${level}!`;
+        gameLog.innerText = `🚪 Avançou! Você passou para o Andar ${level}!`;
         gameLog.style.borderLeftColor = '#00dfd8';
         initGame();
     }
@@ -220,10 +234,10 @@ function resetGame() {
     level = 1;
     scoreElement.innerText = `MOEDAS: ${score}`;
     levelElement.innerText = `ANDAR: ${level}`;
-    gameLog.innerText = 'Labirinto reiniciado! Encontre a saída 🚪.';
+    gameLog.innerText = 'Labirinto resetado! Encontre a saída 🚪.';
     gameLog.style.borderLeftColor = '#ff007f';
     initGame();
 }
 
-// Inicia o Jogo Corretamente
+// Execução Inicial Obrigatória
 initGame();
