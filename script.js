@@ -1,118 +1,97 @@
-// Elementos da Interface
+// Elementos HTML
 const dungeonElement = document.getElementById('dungeon');
 const scoreElement = document.getElementById('score');
 const levelElement = document.getElementById('level');
+const gameLog = document.getElementById('game-log');
 
-// Variáveis do Jogo
+// Configurações e Variáveis
 const MAP_SIZE = 10;
 let score = 0;
 let level = 1;
 let gameOver = false;
 
-// Coordenadas dos Personagens (Linha, Coluna)
 let player = { row: 1, col: 1 };
 let exit = { row: 8, col: 8 };
 let enemy = { row: 5, col: 5 };
 let coin = { row: 3, col: 6 };
 
-// MATRIZ DO MAPA TOTALMENTE CORRIGIDA (1 = Parede, 0 = Chão)
-const mapTemplate = [
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 0, 0, 0, 1, 0, 0, 0, 0, 1],
-    [1, 0, 1, 0, 1, 0, 1, 1, 0, 1],
-    [1, 0, 1, 0, 0, 0, 0, 1, 0, 1],
-    [1, 0, 1, 1, 1, 1, 0, 1, 0, 1],
-    [1, 0, 0, 0, 0, 1, 0, 0, 0, 1],
-    [1, 1, 1, 1, 0, 1, 1, 1, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 1, 0, 1],
-    [1, 0, 1, 1, 1, 1, 0, 0, 0, 1],
+// MATRIZ DEFINITIVA CORRIGIDA (1 = Parede roxa, 0 = Caminho livre)
+const mapTemplate = [,
+ ,
+ ,
+ ,
+ ,
+ ,
+ ,
+ ,
+ ,
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 ];
 
 let currentMap = [];
 
-// ==========================================
-// 🎵 SINTETIZADOR DE EFEITOS SONOROS (8-BIT)
-// ==========================================
+// Gerador de Som 8-bit Virtual (Sem arquivos externos)
 const sound = {
     ctx: null,
-
     init() {
-        if (!this.ctx) {
-            this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-        }
+        if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)();
     },
-
     playStep() {
         this.init();
         let osc = this.ctx.createOscillator();
         let gain = this.ctx.createGain();
         osc.type = 'triangle';
-        osc.frequency.setValueAtTime(120, this.ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(40, this.ctx.currentTime + 0.08);
-        gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.08);
+        osc.frequency.setValueAtTime(100, this.ctx.currentTime);
+        gain.gain.setValueAtTime(0.05, this.ctx.currentTime);
         osc.connect(gain);
         gain.connect(this.ctx.destination);
         osc.start();
-        osc.stop(this.ctx.currentTime + 0.08);
+        osc.stop(this.ctx.currentTime + 0.05);
     },
-
     playCoin() {
         this.init();
         let osc = this.ctx.createOscillator();
         let gain = this.ctx.createGain();
         osc.type = 'square';
-        osc.frequency.setValueAtTime(587.33, this.ctx.currentTime); 
-        osc.frequency.setValueAtTime(880, this.ctx.currentTime + 0.08); 
-        gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.25);
+        osc.frequency.setValueAtTime(600, this.ctx.currentTime);
+        osc.frequency.setValueAtTime(900, this.ctx.currentTime + 0.08);
+        gain.gain.setValueAtTime(0.06, this.ctx.currentTime);
         osc.connect(gain);
         gain.connect(this.ctx.destination);
         osc.start();
-        osc.stop(this.ctx.currentTime + 0.25);
+        osc.stop(this.ctx.currentTime + 0.2);
     },
-
-    playLevelUp() {
+    playLevel() {
         this.init();
-        let notes = [261.63, 329.63, 392.00, 523.25]; 
-        notes.forEach((freq, index) => {
-            let osc = this.ctx.createOscillator();
-            let gain = this.ctx.createGain();
-            osc.type = 'square';
-            osc.frequency.setValueAtTime(freq, this.ctx.currentTime + index * 0.08);
-            gain.gain.setValueAtTime(0.05, this.ctx.currentTime + index * 0.08);
-            gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + index * 0.08 + 0.1);
-            osc.connect(gain);
-            gain.connect(this.ctx.destination);
-            osc.start(this.ctx.currentTime + index * 0.08);
-            osc.stop(this.ctx.currentTime + index * 0.08 + 0.1);
-        });
+        let osc = this.ctx.createOscillator();
+        let gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(400, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1200, this.ctx.currentTime + 0.3);
+        gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.3);
     },
-
-    playGameOver() {
+    playOver() {
         this.init();
         let osc = this.ctx.createOscillator();
         let gain = this.ctx.createGain();
         osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(300, this.ctx.currentTime);
-        osc.frequency.linearRampToValueAtTime(60, this.ctx.currentTime + 0.6);
-        gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
-        gain.gain.linearRampToValueAtTime(0.001, this.ctx.currentTime + 0.6);
+        osc.frequency.setValueAtTime(250, this.ctx.currentTime);
+        osc.frequency.linearRampToValueAtTime(50, this.ctx.currentTime + 0.5);
+        gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
         osc.connect(gain);
         gain.connect(this.ctx.destination);
         osc.start();
-        osc.stop(this.ctx.currentTime + 0.6);
+        osc.stop(this.ctx.currentTime + 0.5);
     }
 };
 
-// ==========================================
-// LÓGICA PRINCIPAL DO JOGO
-// ==========================================
-
 function initGame() {
     gameOver = false;
-    currentMap = JSON.parse(JSON.stringify(mapTemplate)); 
+    currentMap = JSON.parse(JSON.stringify(mapTemplate));
     player = { row: 1, col: 1 };
     exit = { row: 8, col: 8 };
     
@@ -133,8 +112,7 @@ function spawnItem(item) {
 }
 
 function drawMap() {
-    dungeonElement.innerHTML = ''; 
-    
+    dungeonElement.innerHTML = '';
     for (let r = 0; r < MAP_SIZE; r++) {
         for (let c = 0; c < MAP_SIZE; c++) {
             const cell = document.createElement('div');
@@ -145,22 +123,17 @@ function drawMap() {
             } else {
                 cell.classList.add('floor');
                 
-                if (r === player.row && c === player.col) {
-                    cell.innerText = '⚔️';
-                } else if (r === enemy.row && c === enemy.col) {
-                    cell.innerText = '👾';
-                } else if (r === coin.row && c === coin.col) {
-                    cell.innerText = '🪙';
-                } else if (r === exit.row && c === exit.col) {
-                    cell.innerText = '🚪';
-                }
+                if (r === player.row && c === player.col) cell.innerText = '⚔️';
+                else if (r === enemy.row && c === enemy.col) cell.innerText = '👾';
+                else if (r === coin.row && c === coin.col) cell.innerText = '🪙';
+                else if (r === exit.row && c === exit.col) cell.innerText = '🚪';
             }
             dungeonElement.appendChild(cell);
         }
     }
 }
 
-// Movimentação por teclado
+// Movimento via Teclado
 window.addEventListener('keydown', (e) => {
     if (gameOver) return;
 
@@ -168,7 +141,7 @@ window.addEventListener('keydown', (e) => {
     let nextCol = player.col;
 
     if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
-        e.preventDefault(); // Evita rolar a página
+        e.preventDefault();
     }
 
     if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') nextRow--;
@@ -176,16 +149,15 @@ window.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') nextCol--;
     if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') nextCol++;
 
+    // Verifica se colidiu na parede
     if (currentMap[nextRow][nextCol] !== 1) {
         player.row = nextRow;
         player.col = nextCol;
-        
         sound.playStep();
         moveEnemy();
         checkCollisions();
+        drawMap();
     }
-    
-    drawMap();
 });
 
 function moveEnemy() {
@@ -205,58 +177,45 @@ function moveEnemy() {
 }
 
 function checkCollisions() {
+    // Coleta Moeda
     if (player.row === coin.row && player.col === coin.col) {
         score += 10;
-        scoreElement.innerText = `Moedas: ${score}`;
-        coin.row = -1; 
+        scoreElement.innerText = `MOEDAS: ${score}`;
+        coin.row = -1;
         coin.col = -1;
         sound.playCoin();
+        gameLog.innerText = '🪙 +10 Pontos! Você coletou uma moeda de neon!';
+        gameLog.style.borderLeftColor = '#00dfd8';
     }
 
+    // Encontro com o Monstro
     if (player.row === enemy.row && player.col === enemy.col) {
-        sound.playGameOver();
+        sound.playOver();
         gameOver = true;
-        setTimeout(() => alert('💥 O monstro te pegou! Fim de jogo.'), 50);
+        gameLog.innerText = '💥 FIM DE JOGO! O monstro te alcançou. Clique em Reiniciar.';
+        gameLog.style.borderLeftColor = '#ff0000';
     }
 
+    // Chegada na Saída
     if (player.row === exit.row && player.col === exit.col) {
         level++;
-        levelElement.innerText = `Andar: ${level}`;
-        sound.playLevelUp();
-        setTimeout(() => {
-            alert(`🎉 Você avançou para o Andar ${level}!`);
-            initGame();
-        }, 50);
+        levelElement.innerText = `ANDAR: ${level}`;
+        sound.playLevel();
+        gameLog.innerText = `🚪 Avançou! Você desceu com sucesso para o Andar ${level}!`;
+        gameLog.style.borderLeftColor = '#00dfd8';
+        initGame();
     }
 }
 
 function resetGame() {
     score = 0;
     level = 1;
-    scoreElement.innerText = `Moedas: ${score}`;
-    levelElement.innerText = `Andar: ${level}`;
+    scoreElement.innerText = `MOEDAS: ${score}`;
+    levelElement.innerText = `ANDAR: ${level}`;
+    gameLog.innerText = 'Masmorra reiniciada! Boa sorte.';
+    gameLog.style.borderLeftColor = '#ff007f';
     initGame();
 }
 
-// Animação numérica profissional do Dashboard do site
-function animateStats(id, start, end, duration) {
-    let obj = document.getElementById(id);
-    let current = start;
-    let range = end - start;
-    let increment = end > start ? 1 : -1;
-    
-    let step = function() {
-        current += increment;
-        obj.innerText = current + (id === 'stat-lines' ? '+' : '');
-        if (current !== end) {
-            setTimeout(step, duration / range);
-        }
-    };
-    setTimeout(step, 100);
-}
-
-// Inicializadores automáticos
+// Dispara o jogo
 initGame();
-animateStats('stat-games', 0, 14, 1500);
-animateStats('stat-lines', 0, 450, 1500);
-animateStats('stat-coffee', 0, 82, 1500);
