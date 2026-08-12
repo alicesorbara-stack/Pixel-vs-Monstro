@@ -1,85 +1,221 @@
+/* Configurações Globais */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
-    background-color: #121214;
-    color: #e1e1e6;
-    font-family: 'Courier New', Courier, monospace;
+    background-color: #0b0b0e;
+    color: #f3f4f6;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    margin: 0;
+    overflow-x: hidden;
+    padding: 40px 20px;
 }
 
-.game-container {
+/* Fundo Degradê Dinâmico e Vibrante */
+.gradient-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(125deg, #4f46e5, #ec4899, #06b6d4);
+    background-size: 400% 400%;
+    animation: moveGradient 15s ease infinite;
+    z-index: -1;
+    opacity: 0.15;
+}
+
+@keyframes moveGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Container Principal em Estilo Vidro (Glassmorphism) */
+.main-container {
+    background: rgba(20, 20, 25, 0.7);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    padding: 40px;
+    width: 100%;
+    max-width: 650px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
     text-align: center;
-    background-color: #202024;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.5);
-    border: 2px solid #323238;
+}
+
+/* Estilização do Topo */
+.badge {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 h1 {
-    color: #4ea8de;
-    margin-bottom: 10px;
+    font-size: 36px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 8px;
+}
+
+h1 span {
+    background: linear-gradient(90deg, #ec4899, #06b6d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+    color: #9ca3af;
+    font-size: 15px;
+    margin-bottom: 30px;
+    line-height: 1.5;
+}
+
+/* Painel de Informações Bento Grid */
+.bento-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 100fr);
+    gap: 12px;
+    margin-bottom: 40px;
+}
+
+.bento-item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 16px;
+    border-radius: 16px;
+    transition: transform 0.2s;
+}
+
+.bento-item:hover {
+    transform: translateY(-4px);
+}
+
+.bento-item h3 {
     font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 4px;
+}
+
+.bento-item p {
+    font-size: 11px;
+    color: #9ca3af;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* Cores de Destaque do Painel */
+.color-purple h3 { color: #818cf8; }
+.color-pink h3 { color: #f472b6; }
+.color-blue h3 { color: #22d3ee; }
+
+/* Seção do Jogo */
+.game-section {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 30px;
+}
+
+.game-section h2 {
+    font-size: 18px;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+}
+
+.game-desc {
+    font-size: 13px;
+    color: #6b7280;
+    margin-bottom: 20px;
 }
 
 .scoreboard {
     display: flex;
-    justify-content: space-around;
-    margin-bottom: 15px;
-    font-size: 18px;
-    font-weight: bold;
+    justify-content: space-between;
+    max-width: 320px;
+    margin: 0 auto 15px auto;
+    font-size: 15px;
+    font-weight: 700;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 8px 16px;
+    border-radius: 8px;
 }
 
-/* Grade do Labirinto */
+#score { color: #f472b6; }
+#level { color: #22d3ee; }
+
+/* Grade Corrigida do Labirinto */
 #dungeon {
     display: grid;
-    grid-template-columns: repeat(10, 40px); /* 10 colunas de 40px */
-    grid-template-rows: repeat(10, 40px);    /* 10 linhas de 40px */
-    gap: 2px;
-    background-color: #323238;
-    padding: 5px;
-    border-radius: 4px;
+    grid-template-columns: repeat(10, 32px);
+    grid-template-rows: repeat(10, 32px);
+    gap: 3px;
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: 8px;
+    border-radius: 12px;
     margin: 0 auto;
     width: max-content;
+    border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-/* Estilo de cada quadrado (Célula) */
 .cell {
-    width: 40px;
-    height: 40px;
+    width: 32px;
+    height: 32px;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 20px;
-    background-color: #121214;
-    border-radius: 2px;
+    font-size: 16px;
+    border-radius: 6px;
+    transition: background 0.1s;
 }
 
-/* Tipos de terrenos */
-.wall { background-color: #29292e; border: 1px solid #323238; }
-.floor { background-color: #121214; }
+/* Blocos Visuais Intensos */
+.wall { 
+    background-color: #1f2937; 
+    border: 1px solid #374151;
+}
+.floor { 
+    background-color: #030712; 
+}
 
 .controls {
-    font-size: 14px;
-    color: #7c7c8a;
-    margin-top: 15px;
+    font-size: 12px;
+    color: #9ca3af;
+    margin-top: 16px;
 }
 
+/* Botão Estilizado */
 button {
-    background-color: #4ea8de;
+    background: linear-gradient(90deg, #4f46e5, #ec4899);
     color: #fff;
     border: none;
-    padding: 10px 20px;
-    font-family: inherit;
-    font-size: 16px;
+    padding: 12px 28px;
+    font-size: 14px;
+    font-weight: 600;
     cursor: pointer;
-    border-radius: 4px;
-    margin-top: 10px;
-    transition: background 0.2s;
+    border-radius: 10px;
+    margin-top: 16px;
+    box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
+    transition: opacity 0.2s, transform 0.1s;
 }
 
 button:hover {
-    background-color: #3a86b7;
+    opacity: 0.9;
+    transform: scale(1.02);
+}
+
+button:active {
+    transform: scale(0.98);
 }
