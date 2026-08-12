@@ -12,7 +12,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 40px 20px;
+    padding: 60px 20px; /* Aumentado o espaçamento nas bordas da tela */
 }
 
 .gradient-bg {
@@ -40,19 +40,19 @@ body {
     border: 2px solid #7928ca;
     box-shadow: 0 0 40px rgba(121, 40, 202, 0.6);
     border-radius: 24px;
-    padding: 30px;
+    padding: 40px; /* Mais espaço interno no painel */
     width: 100%;
-    max-width: 580px;
+    max-width: 600px;
     text-align: center;
 }
 
 h1 {
-    font-size: 36px;
+    font-size: 38px;
     font-weight: 900;
     letter-spacing: 2px;
     color: #00dfd8;
     text-shadow: 0 0 10px #00dfd8;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
 }
 
 h1 span {
@@ -61,34 +61,34 @@ h1 span {
 }
 
 .subtitle {
-    font-size: 13px;
+    font-size: 14px;
     color: #a0aec0;
-    margin-bottom: 30px;
+    margin-bottom: 45px; /* Mais espaço abaixo do título */
 }
 
 .game-section {
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 30px;
+    padding: 30px; /* Mais espaço dentro de cada bloco de jogo */
+    margin-bottom: 45px; /* GRANDE ESPAÇO entre o Jogo 1 e o Jogo 2 */
 }
 
 .game-section h2 {
-    font-size: 15px;
+    font-size: 16px;
     letter-spacing: 1px;
-    margin-bottom: 15px;
+    margin-bottom: 25px; /* Mais espaço abaixo do título do jogo */
     color: #ffffff;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding-bottom: 8px;
+    padding-bottom: 12px;
 }
 
 .scoreboard {
     display: flex;
     justify-content: space-between;
     font-weight: 800;
-    font-size: 14px;
-    margin-bottom: 15px;
+    font-size: 15px;
+    margin-bottom: 25px; /* Mais espaço abaixo do placar */
 }
 
 #score, #snake-score { color: #00dfd8; text-shadow: 0 0 5px #00dfd8; }
@@ -105,7 +105,7 @@ h1 span {
     border-radius: 12px;
     border: 2px solid #00dfd8;
     box-shadow: 0 0 15px rgba(0, 223, 216, 0.3);
-    margin: 0 auto 15px auto;
+    margin: 0 auto 25px auto; /* Mais espaço abaixo do labirinto */
     width: max-content;
 }
 
@@ -128,21 +128,21 @@ h1 span {
     border: 2px solid #ff007f;
     border-radius: 12px;
     box-shadow: 0 0 15px rgba(255, 0, 127, 0.3);
-    margin-bottom: 15px;
+    margin-bottom: 25px; /* Mais espaço abaixo da arena da cobrinha */
 }
 
 #game-log, #snake-log {
     background: rgba(0, 0, 0, 0.5);
     border-left: 4px solid #ff007f;
-    padding: 10px;
+    padding: 12px;
     border-radius: 4px;
-    font-size: 12px;
+    font-size: 13px;
     color: #cbd5e0;
-    min-height: 36px;
+    min-height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 15px;
+    margin-bottom: 25px; /* Mais espaço abaixo das mensagens */
 }
 
 #snake-log {
@@ -153,8 +153,8 @@ h1 span {
     background: linear-gradient(90deg, #ff007f, #7928ca);
     color: #fff;
     border: none;
-    padding: 10px 24px;
-    font-size: 12px;
+    padding: 12px 28px;
+    font-size: 13px;
     font-weight: 700;
     text-transform: uppercase;
     cursor: pointer;
