@@ -4,7 +4,7 @@ const scoreElement = document.getElementById('score');
 const levelElement = document.getElementById('level');
 const gameLog = document.getElementById('game-log');
 
-// Configurações e Variáveis
+// Configurações Globais
 const MAP_SIZE = 10;
 let score = 0;
 let level = 1;
@@ -15,7 +15,7 @@ let exit = { row: 8, col: 8 };
 let enemy = { row: 5, col: 5 };
 let coin = { row: 3, col: 6 };
 
-// MATRIZ DEFINITIVA CORRIGIDA (1 = Parede roxa, 0 = Caminho livre)
+// MATRIZ COMPLETA E CORRIGIDA SEM ERROS DE SINTAXE (1 = Parede, 0 = Caminho)
 const mapTemplate = [,
  ,
  ,
@@ -30,32 +30,37 @@ const mapTemplate = [,
 
 let currentMap = [];
 
-// Gerador de Som 8-bit Virtual (Sem arquivos externos)
+// Gerador de Áudio Web Audio API (Sons de 8-bits puros)
 const sound = {
     ctx: null,
     init() {
-        if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        if (!this.ctx) {
+            this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        }
     },
     playStep() {
         this.init();
+        if (!this.ctx) return;
         let osc = this.ctx.createOscillator();
         let gain = this.ctx.createGain();
         osc.type = 'triangle';
-        osc.frequency.setValueAtTime(100, this.ctx.currentTime);
-        gain.gain.setValueAtTime(0.05, this.ctx.currentTime);
+        osc.frequency.setValueAtTime(110, this.ctx.currentTime);
+        gain.gain.setValueAtTime(0.04, this.ctx.currentTime);
         osc.connect(gain);
         gain.connect(this.ctx.destination);
         osc.start();
-        osc.stop(this.ctx.currentTime + 0.05);
+        osc.stop(this.ctx.currentTime + 0.04);
     },
     playCoin() {
         this.init();
+        if (!this.ctx) return;
         let osc = this.ctx.createOscillator();
         let gain = this.ctx.createGain();
         osc.type = 'square';
-        osc.frequency.setValueAtTime(600, this.ctx.currentTime);
-        osc.frequency.setValueAtTime(900, this.ctx.currentTime + 0.08);
-        gain.gain.setValueAtTime(0.06, this.ctx.currentTime);
+        osc.frequency.setValueAtTime(523.25, this.ctx.currentTime); // Nota Dó
+        osc.frequency.setValueAtTime(783.99, this.ctx.currentTime + 0.08); // Nota Sol
+        gain.gain.setValueAtTime(0.05, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.2);
         osc.connect(gain);
         gain.connect(this.ctx.destination);
         osc.start();
@@ -63,12 +68,13 @@ const sound = {
     },
     playLevel() {
         this.init();
+        if (!this.ctx) return;
         let osc = this.ctx.createOscillator();
         let gain = this.ctx.createGain();
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(400, this.ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(1200, this.ctx.currentTime + 0.3);
-        gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+        osc.frequency.setValueAtTime(300, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1000, this.ctx.currentTime + 0.3);
+        gain.gain.setValueAtTime(0.06, this.ctx.currentTime);
         osc.connect(gain);
         gain.connect(this.ctx.destination);
         osc.start();
@@ -76,12 +82,13 @@ const sound = {
     },
     playOver() {
         this.init();
+        if (!this.ctx) return;
         let osc = this.ctx.createOscillator();
         let gain = this.ctx.createGain();
         osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(250, this.ctx.currentTime);
-        osc.frequency.linearRampToValueAtTime(50, this.ctx.currentTime + 0.5);
-        gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+        osc.frequency.setValueAtTime(200, this.ctx.currentTime);
+        osc.frequency.linearRampToValueAtTime(40, this.ctx.currentTime + 0.5);
+        gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
         osc.connect(gain);
         gain.connect(this.ctx.destination);
         osc.start();
@@ -133,7 +140,7 @@ function drawMap() {
     }
 }
 
-// Movimento via Teclado
+// Evento de clique no teclado
 window.addEventListener('keydown', (e) => {
     if (gameOver) return;
 
@@ -141,7 +148,7 @@ window.addEventListener('keydown', (e) => {
     let nextCol = player.col;
 
     if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
-        e.preventDefault();
+        e.preventDefault(); // Impede a tela de rolar
     }
 
     if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') nextRow--;
@@ -149,11 +156,12 @@ window.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') nextCol--;
     if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') nextCol++;
 
-    // Verifica se colidiu na parede
+    // Só anda se não for parede
     if (currentMap[nextRow][nextCol] !== 1) {
         player.row = nextRow;
         player.col = nextCol;
-        sound.playStep();
+        
+        sound.playStep(); // Toca som de passo
         moveEnemy();
         checkCollisions();
         drawMap();
@@ -184,24 +192,24 @@ function checkCollisions() {
         coin.row = -1;
         coin.col = -1;
         sound.playCoin();
-        gameLog.innerText = '🪙 +10 Pontos! Você coletou uma moeda de neon!';
+        gameLog.innerText = '🪙 Boa! Você coletou +10 moedas de neon.';
         gameLog.style.borderLeftColor = '#00dfd8';
     }
 
-    // Encontro com o Monstro
+    // Colisão com o Monstro
     if (player.row === enemy.row && player.col === enemy.col) {
         sound.playOver();
         gameOver = true;
-        gameLog.innerText = '💥 FIM DE JOGO! O monstro te alcançou. Clique em Reiniciar.';
-        gameLog.style.borderLeftColor = '#ff0000';
+        gameLog.innerText = `💥 GAME OVER! O monstro te pegou no Andar ${level}. Clique abaixo para reiniciar.`;
+        gameLog.style.borderLeftColor = '#ff007f';
     }
 
-    // Chegada na Saída
+    // Chegou no Portal
     if (player.row === exit.row && player.col === exit.col) {
         level++;
         levelElement.innerText = `ANDAR: ${level}`;
         sound.playLevel();
-        gameLog.innerText = `🚪 Avançou! Você desceu com sucesso para o Andar ${level}!`;
+        gameLog.innerText = `🚪 Portal Ativado! Você desceu com segurança para o Andar ${level}!`;
         gameLog.style.borderLeftColor = '#00dfd8';
         initGame();
     }
@@ -212,10 +220,10 @@ function resetGame() {
     level = 1;
     scoreElement.innerText = `MOEDAS: ${score}`;
     levelElement.innerText = `ANDAR: ${level}`;
-    gameLog.innerText = 'Masmorra reiniciada! Boa sorte.';
+    gameLog.innerText = 'Labirinto reiniciado! Encontre a saída 🚪.';
     gameLog.style.borderLeftColor = '#ff007f';
     initGame();
 }
 
-// Dispara o jogo
+// Inicia o Jogo Corretamente
 initGame();
