@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Dungeon Crawler</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <h1>⚔️ DUNGEON CRAWLER ⚔️</h1>
+        <div class="scoreboard">
+            <span id="score">Moedas: 0</span>
+            <span id="level">Andar: 1</span>
+        </div>
+        
+        <!-- O labirinto será gerado aqui dentro pelo JavaScript -->
+        <div id="dungeon"></div>
+        
+        <p class="controls">Use as <b>setas do teclado</b> ou <b>WASD</b> para se mover.</p>
+        <button id="restart-btn" onclick="resetGame()">Reiniciar Jogo</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
