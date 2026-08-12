@@ -15,7 +15,6 @@ body {
     padding: 20px;
 }
 
-/* Fundo com Arco-íris de Gradiente Animado */
 .gradient-bg {
     position: fixed;
     top: 0;
@@ -24,9 +23,9 @@ body {
     height: 100vh;
     background: linear-gradient(45deg, #ff007f, #7928ca, #00dfd8, #ff007f);
     background-size: 400% 400%;
-    animation: moveBg 10s ease infinite;
+    animation: moveBg 12s ease infinite;
     z-index: -1;
-    opacity: 0.2;
+    opacity: 0.25;
 }
 
 @keyframes moveBg {
@@ -35,21 +34,20 @@ body {
     100% { background-position: 0% 50%; }
 }
 
-/* Painel Central Estilo Vidro Neon */
 .main-container {
     background: rgba(15, 15, 25, 0.85);
     backdrop-filter: blur(20px);
     border: 2px solid #7928ca;
-    box-shadow: 0 0 30px rgba(121, 40, 202, 0.4);
-    border-radius: 20px;
+    box-shadow: 0 0 40px rgba(121, 40, 202, 0.5);
+    border-radius: 24px;
     padding: 30px;
     width: 100%;
-    max-width: 550px;
+    max-width: 580px;
     text-align: center;
 }
 
 h1 {
-    font-size: 38px;
+    font-size: 36px;
     font-weight: 900;
     letter-spacing: 2px;
     color: #00dfd8;
@@ -68,10 +66,43 @@ h1 span {
     margin-bottom: 25px;
 }
 
-/* Seção de Instruções */
-.instructions-section {
-    background: rgba(255, 255, 255, 0.03);
+/* Estilo Bento Grid dos Contadores */
+.bento-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 25px;
+}
+
+.bento-item {
+    background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 14px;
+    border-radius: 14px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.bento-item h3 {
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 2px;
+}
+
+.bento-item p {
+    font-size: 10px;
+    color: #a0aec0;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.color-purple h3 { color: #818cf8; text-shadow: 0 0 8px rgba(129, 140, 248, 0.5); }
+.color-pink h3 { color: #f472b6; text-shadow: 0 0 8px rgba(244, 114, 182, 0.5); }
+.color-blue h3 { color: #22d3ee; text-shadow: 0 0 8px rgba(34, 211, 238, 0.5); }
+
+.instructions-section {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 12px;
     padding: 15px;
     margin-bottom: 25px;
@@ -79,7 +110,7 @@ h1 span {
 }
 
 .instructions-section h3 {
-    font-size: 14px;
+    font-size: 13px;
     color: #ff007f;
     margin-bottom: 10px;
     letter-spacing: 1px;
@@ -94,7 +125,7 @@ h1 span {
 .ins-card {
     font-size: 12px;
     color: #e2e8f0;
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(0, 0, 0, 0.4);
     padding: 8px;
     border-radius: 6px;
     display: flex;
@@ -102,74 +133,64 @@ h1 span {
     gap: 8px;
 }
 
-.emoji {
-    font-size: 16px;
-}
-
-/* Placar Colorido */
 .scoreboard {
     display: flex;
     justify-content: space-between;
     font-weight: 800;
     font-size: 16px;
     margin-bottom: 15px;
-    letter-spacing: 1px;
 }
 
 #score { color: #00dfd8; text-shadow: 0 0 5px #00dfd8; }
 #level { color: #ff007f; text-shadow: 0 0 5px #ff007f; }
 
-/* Grade Exata do Labirinto */
 #dungeon {
     display: grid;
-    grid-template-columns: repeat(10, 35px);
-    grid-template-rows: repeat(10, 35px);
+    grid-template-columns: repeat(10, 36px);
+    grid-template-rows: repeat(10, 36px);
     gap: 3px;
-    background: #1a1a2e;
+    background: #111122;
     padding: 8px;
     border-radius: 12px;
     border: 2px solid #00dfd8;
-    box-shadow: 0 0 15px rgba(0, 223, 216, 0.2);
+    box-shadow: 0 0 20px rgba(0, 223, 216, 0.3);
     margin: 0 auto 20px auto;
     width: max-content;
 }
 
 .cell {
-    width: 35px;
-    height: 35px;
+    width: 36px;
+    height: 36px;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 18px;
-    border-radius: 4px;
+    border-radius: 5px;
 }
 
-/* Paredes e Pisos Coloridos */
 .wall { 
     background-color: #7928ca; 
-    box-shadow: inset 0 0 8px rgba(0,0,0,0.5);
     border: 1px solid #9d4edd;
+    box-shadow: inset 0 0 6px rgba(0,0,0,0.6);
 }
 .floor { 
-    background-color: #09090e; 
+    background-color: #05050a; 
 }
 
-/* Caixa de Logs Dinâmica */
 #game-log {
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.6);
     border-left: 4px solid #ff007f;
-    padding: 10px;
-    border-radius: 4px;
+    padding: 12px;
+    border-radius: 6px;
     font-size: 13px;
     color: #cbd5e0;
-    min-height: 38px;
+    min-height: 42px;
     display: flex;
     align-items: center;
     justify-content: center;
     margin-bottom: 15px;
 }
 
-/* Botão Neon */
 button {
     background: linear-gradient(90deg, #ff007f, #7928ca);
     color: #fff;
