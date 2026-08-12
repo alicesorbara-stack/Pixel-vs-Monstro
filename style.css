@@ -12,7 +12,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 60px 20px; /* Aumentado o espaçamento nas bordas da tela */
+    padding: 40px 20px;
 }
 
 .gradient-bg {
@@ -40,44 +40,36 @@ body {
     border: 2px solid #7928ca;
     box-shadow: 0 0 40px rgba(121, 40, 202, 0.6);
     border-radius: 24px;
-    padding: 40px; /* Mais espaço interno no painel */
+    padding: 40px;
     width: 100%;
-    max-width: 600px;
+    max-width: 580px;
     text-align: center;
 }
 
 h1 {
-    font-size: 38px;
+    font-size: 36px;
     font-weight: 900;
     letter-spacing: 2px;
     color: #00dfd8;
     text-shadow: 0 0 10px #00dfd8;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 }
 
-h1 span {
-    color: #ff007f;
-    text-shadow: 0 0 10px #ff007f;
-}
-
-.subtitle {
-    font-size: 14px;
-    color: #a0aec0;
-    margin-bottom: 45px; /* Mais espaço abaixo do título */
-}
+h1 span { color: #ff007f; text-shadow: 0 0 10px #ff007f; }
+.subtitle { font-size: 13px; color: #a0aec0; margin-bottom: 30px; }
 
 .game-section {
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: 16px;
-    padding: 30px; /* Mais espaço dentro de cada bloco de jogo */
-    margin-bottom: 45px; /* GRANDE ESPAÇO entre o Jogo 1 e o Jogo 2 */
+    padding: 30px;
+    margin-bottom: 45px;
 }
 
 .game-section h2 {
-    font-size: 16px;
+    font-size: 15px;
     letter-spacing: 1px;
-    margin-bottom: 25px; /* Mais espaço abaixo do título do jogo */
+    margin-bottom: 25px;
     color: #ffffff;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     padding-bottom: 12px;
@@ -87,14 +79,13 @@ h1 span {
     display: flex;
     justify-content: space-between;
     font-weight: 800;
-    font-size: 15px;
-    margin-bottom: 25px; /* Mais espaço abaixo do placar */
+    font-size: 14px;
+    margin-bottom: 25px;
 }
 
 #score, #snake-score { color: #00dfd8; text-shadow: 0 0 5px #00dfd8; }
 #level, #snake-high { color: #ff007f; text-shadow: 0 0 5px #ff007f; }
 
-/* Grid Jogo 1 */
 #dungeon {
     display: grid;
     grid-template-columns: repeat(10, 34px);
@@ -105,7 +96,7 @@ h1 span {
     border-radius: 12px;
     border: 2px solid #00dfd8;
     box-shadow: 0 0 15px rgba(0, 223, 216, 0.3);
-    margin: 0 auto 25px auto; /* Mais espaço abaixo do labirinto */
+    margin: 0 auto 25px auto;
     width: max-content;
 }
 
@@ -122,13 +113,12 @@ h1 span {
 .wall { background-color: #7928ca; border: 1px solid #9d4edd; }
 .floor { background-color: #030307; }
 
-/* Canvas Jogo 2 */
 #snakeCanvas {
     background-color: #030307;
     border: 2px solid #ff007f;
     border-radius: 12px;
     box-shadow: 0 0 15px rgba(255, 0, 127, 0.3);
-    margin-bottom: 25px; /* Mais espaço abaixo da arena da cobrinha */
+    margin-bottom: 25px;
 }
 
 #game-log, #snake-log {
@@ -136,25 +126,23 @@ h1 span {
     border-left: 4px solid #ff007f;
     padding: 12px;
     border-radius: 4px;
-    font-size: 13px;
+    font-size: 12px;
     color: #cbd5e0;
-    min-height: 40px;
+    min-height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 25px; /* Mais espaço abaixo das mensagens */
+    margin-bottom: 25px;
 }
 
-#snake-log {
-    border-left-color: #00dfd8;
-}
+#snake-log { border-left-color: #00dfd8; }
 
 .game-btn {
     background: linear-gradient(90deg, #ff007f, #7928ca);
     color: #fff;
     border: none;
     padding: 12px 28px;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 700;
     text-transform: uppercase;
     cursor: pointer;
@@ -162,11 +150,15 @@ h1 span {
     transition: transform 0.1s, opacity 0.2s;
 }
 
-.snake-btn {
-    background: linear-gradient(90deg, #00dfd8, #7928ca);
-}
+.snake-btn { background: linear-gradient(90deg, #00dfd8, #7928ca); }
+.game-btn:hover { opacity: 0.9; transform: scale(1.03); }
 
-.game-btn:hover {
-    opacity: 0.9;
-    transform: scale(1.03);
-}
+.like-section { margin-top: 45px; border: 1px solid rgba(255, 0, 127, 0.2); }
+#like-btn { background: linear-gradient(90deg, #ff007f, #7928ca); box-shadow: 0 4px 15px rgba(255, 0, 127, 0.4); font-size: 14px; padding: 14px 32px; border-radius: 50px; transition: all 0.2s ease; }
+#like-btn.liked { background: #ff007f; box-shadow: 0 0 20px #ff007f; }
+@keyframes heartBeat { 0% { transform: scale(1); } 30% { transform: scale(1.15); } 60% { transform: scale(0.95); } 100% { transform: scale(1); } }
+.pulse { animation: heartBeat 0.4s ease-in-out; }
+
+.like-container-wrapper { position: relative; display: inline-block; margin: 10px auto; }
+.confetti { position: absolute; width: 8px; height: 8px; border-radius: 2px; pointer-events: none; z-index: 10; opacity: 1; transform: scale(1); animation: flyAway 0.6s cubic-bezier(0.1, 0.8, 0.3, 1) forwards; }
+@keyframes flyAway { 0% { top: 50%; left: 50%; transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 1; } 100% { top: var(--y); left: var(--x); transform: translate(-50%, -50%) scale(0) rotate(var(--rot)); opacity: 0; } }
